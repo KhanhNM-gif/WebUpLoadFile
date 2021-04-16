@@ -1,4 +1,5 @@
 ﻿using BSS;
+using BSS.DataValidator;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,10 +49,14 @@ namespace WebUpLoadFile.Controllers
 
             return ltFileAttach.ToResultOk();
         }
+
         [HttpPost]
         public Result Delete([FromBody] FileAttach FileAttach)
         {
             bool isDelete = true;
+
+            DataValidator.Validate(new { FileAttach.FileAttachGUID }).ToErrorMessage();
+
             string msg = FileAttach.UpdateIsDelete(new DBM(), FileAttach.FileAttachGUID, isDelete);
             if (msg.Length > 0) return Log.ProcessError(msg).ToResultError();
 
